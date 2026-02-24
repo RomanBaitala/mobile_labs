@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iot_flutter_lab/widgets/hack_logic.dart';
 import 'package:iot_flutter_lab/widgets/help_pannel.dart';
+import 'package:iot_flutter_lab/widgets/icon.dart';
 import 'package:iot_flutter_lab/widgets/progress_bar.dart';
 import 'package:iot_flutter_lab/widgets/terminal_input.dart';
 
@@ -110,6 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 30),
             HelpPannel(state: _showHelp),
+            const SizedBox(height: 30),
+            const CustomIcon(),
           ],
         ),
       ),
