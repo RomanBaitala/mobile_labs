@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-// import 'screens/login_screen.dart';
-// import 'screens/register_screen.dart';
-// import 'screens/home_screen.dart';
+
 import 'package:iot_flutter_lab/screens/dashboard.dart';
 import 'package:iot_flutter_lab/screens/login.dart';
+import 'package:iot_flutter_lab/screens/profile.dart';
 import 'package:iot_flutter_lab/screens/register.dart';
+
 
 void main() {
   runApp(const HomeServerApp());
@@ -41,7 +41,7 @@ class HomeServerApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const DashboardScreen(),
-        // '/profile': (context) => const DashboardScreen(),
+        '/profile': (context) => const ProfileScreen(),
       },
     );
   }
