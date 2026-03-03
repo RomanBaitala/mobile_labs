@@ -28,7 +28,9 @@ class CustomLoginButton extends StatelessWidget {
           buttonText.toUpperCase(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            letterSpacing: 1.2
+            fontSize: 16,
+            letterSpacing: 1.2,
+            color: Colors.white
           ),
         ),
       )

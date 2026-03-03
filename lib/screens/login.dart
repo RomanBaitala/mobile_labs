@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:iot_flutter_lab/widgets/auth_toggle_text.dart';
 import 'package:iot_flutter_lab/widgets/custom_input.dart';
 import 'package:iot_flutter_lab/widgets/custom_login_button.dart';
+
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -15,7 +17,7 @@ class LoginScreen extends StatelessWidget {
           children: [
             const Icon(Icons.dns, size:80, color: Colors.green),
             const SizedBox(height: 32),
-            const CustomInput(label: 'Login', icon: Icons.verified_user),
+            const CustomInput(label: 'Username', icon: Icons.verified_user),
             const SizedBox(height: 16),
             const CustomInput(
               label: 'Password', 
@@ -25,7 +27,13 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 16),
             CustomLoginButton(
               buttonText: 'Login',
-              onPressed: () => Navigator.pushReplacementNamed(context, '/profile'),
+              onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
+            ),
+            const SizedBox(height: 8), 
+            AuthToggle(
+              question: 'Немає акаунту?', 
+              actionText: 'Зареєструватись', 
+              onTap: () => Navigator.pushNamed(context, '/register')
             )
           ],
         )
