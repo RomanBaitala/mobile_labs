@@ -33,7 +33,7 @@ class LoginScreen extends StatelessWidget {
             AuthToggle(
               question: 'Немає акаунту?', 
               actionText: 'Зареєструватись', 
-              onTap: () => Navigator.pushNamed(context, '/register')
+              onTap: () => Navigator.pushReplacementNamed(context, '/register')
             )
           ],
         )

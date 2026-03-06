@@ -34,7 +34,7 @@ class RegisterScreen extends StatelessWidget {
             AuthToggle(
               question: 'Вже маєте каунт?', 
               actionText: 'Увійти', 
-              onTap: () => Navigator.pushNamed(context, '/login')
+              onTap: () => Navigator.pushReplacementNamed(context, '/login')
             )
           ],
         )
