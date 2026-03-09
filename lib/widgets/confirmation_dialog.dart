@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 
-class DeleteAccountDialog extends StatelessWidget {
+class ConfirmationDialog extends StatelessWidget {
+  final String title;
+  final String content;
+  final String confirmText;
+  final Color confirmColor;
   final VoidCallback onConfirm;
 
-  const DeleteAccountDialog({
+  const ConfirmationDialog({
+    required this.title,
+    required this.content,
     required this.onConfirm,
+    this.confirmText = 'Видалити',
+    this.confirmColor = Colors.red,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Підтвердження видалення'),
-      content: const Text(
-        'Ви впевнені, що хочете видалити акаунт? '
-        'Всі ваші дані будуть стерті без можливості відновлення.'
-      ),
+      title: Text(title),
+      content: Text(content),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -23,14 +28,14 @@ class DeleteAccountDialog extends StatelessWidget {
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
+            backgroundColor: confirmColor,
             foregroundColor: Colors.white,
           ),
           onPressed: () {
             Navigator.of(context).pop();
-            onConfirm(); 
+            onConfirm();
           },
-          child: const Text('Видалити'),
+          child: Text(confirmText),
         ),
       ],
     );

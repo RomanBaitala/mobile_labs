@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iot_flutter_lab/models/user.dart';
 import 'package:iot_flutter_lab/repositories/auth_repository.dart';
-import 'package:iot_flutter_lab/widgets/delete_account_dialog.dart';
+import 'package:iot_flutter_lab/widgets/confirmation_dialog.dart';
 import 'package:iot_flutter_lab/widgets/profile_title.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -91,7 +91,9 @@ class ProfileScreen extends StatelessWidget {
                   onTap: () {
                     showDialog<void>(
                       context: context,
-                      builder: (context) => DeleteAccountDialog(
+                      builder: (context) => ConfirmationDialog(
+                        title: 'Видалити акаунт?',
+                        content: 'Всі ваші дані будуть стерті назавжди.',
                         onConfirm: () async {
                           await authRepo.deleteAccount();
                           if (context.mounted) {
@@ -100,7 +102,7 @@ class ProfileScreen extends StatelessWidget {
                         },
                       ),
                     );
-                  },
+                  }
                 )
               ],
             ),
