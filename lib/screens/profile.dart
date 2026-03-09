@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iot_flutter_lab/models/user.dart';
 import 'package:iot_flutter_lab/repositories/auth_repository.dart';
+import 'package:iot_flutter_lab/widgets/delete_account_dialog.dart';
 import 'package:iot_flutter_lab/widgets/profile_title.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -81,6 +82,26 @@ class ProfileScreen extends StatelessWidget {
                     }
                   },
                 ),
+                ListTile(
+                  leading: const Icon(Icons.delete, color: Colors.red),
+                  title: const Text(
+                    'Видалити акаунт',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onTap: () {
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => DeleteAccountDialog(
+                        onConfirm: () async {
+                          await authRepo.deleteAccount();
+                          if (context.mounted) {
+                            Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                          }
+                        },
+                      ),
+                    );
+                  },
+                )
               ],
             ),
           );
