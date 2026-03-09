@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (success) {
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/servers');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

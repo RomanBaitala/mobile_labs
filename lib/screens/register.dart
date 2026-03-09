@@ -42,7 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               backgroundColor: Colors.greenAccent,
             ),
           );
-          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushReplacementNamed(context, '/servers');
         }
       } catch (e) {
         if (mounted) {
