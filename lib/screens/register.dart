@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/domain/validators/user_validator.dart';
 import 'package:iot_flutter_lab/domain/models/user.dart';
 import 'package:iot_flutter_lab/domain/repositories/auth_repository.dart';
+import 'package:iot_flutter_lab/domain/validators/user_validator.dart';
 import 'package:iot_flutter_lab/widgets/auth_toggle_text.dart';
 import 'package:iot_flutter_lab/widgets/custom_input.dart';
 import 'package:iot_flutter_lab/widgets/custom_login_button.dart';
