@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/models/server.dart';
+import 'package:iot_flutter_lab/domain/models/server.dart';
 import 'package:iot_flutter_lab/widgets/add_server_dialog.dart';
 import 'package:iot_flutter_lab/widgets/confirmation_dialog.dart';
 import 'package:iot_flutter_lab/widgets/server_card.dart';

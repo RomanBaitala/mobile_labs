@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/models/server.dart';
+import 'package:iot_flutter_lab/domain/models/server.dart';
 
 class AddServerDialog extends StatefulWidget {
   const AddServerDialog({super.key});

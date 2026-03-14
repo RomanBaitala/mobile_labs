@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/models/user.dart';
-import 'package:iot_flutter_lab/repositories/iauth_repository.dart';
+import 'package:iot_flutter_lab/domain/models/user.dart';
+import 'package:iot_flutter_lab/domain/repositories/iauth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalAuthRepository implements IAuthRepository {

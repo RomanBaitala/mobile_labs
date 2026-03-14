@@ -1,4 +1,4 @@
-import 'package:iot_flutter_lab/models/user.dart';
+import 'package:iot_flutter_lab/domain/models/user.dart';
 
 abstract class IAuthRepository {
   Future<bool> register(UserModel user);

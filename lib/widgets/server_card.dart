@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/models/server.dart';
+import 'package:iot_flutter_lab/domain/models/server.dart';
 
 class ServerCard extends StatelessWidget {
   final ServerModel server;

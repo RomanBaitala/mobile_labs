@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/models/user.dart';
-import 'package:iot_flutter_lab/repositories/auth_repository.dart';
+import 'package:iot_flutter_lab/domain/models/user.dart';
+import 'package:iot_flutter_lab/domain/repositories/auth_repository.dart';
 import 'package:iot_flutter_lab/widgets/confirmation_dialog.dart';
 import 'package:iot_flutter_lab/widgets/profile_title.dart';
 
