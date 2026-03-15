@@ -42,6 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.redAccent,
         ),
       );
+    } else {
       Navigator.of(context).pop();
     }
   }
