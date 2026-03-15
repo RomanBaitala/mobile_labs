@@ -42,7 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.redAccent,
         ),
       );
-    } else {
+    }
+
+    if (success && mounted){
       Navigator.of(context).pop();
     }
   }
