@@ -42,4 +42,8 @@ class AuthProvider extends ChangeNotifier {
     _status = AuthStatus.unauthenticated;
     notifyListeners();
   }
+
+  Future<void> deleteAccount() async {
+    logout();
+  }
 }
