@@ -4,7 +4,7 @@ import 'package:iot_flutter_lab/domain/repositories/iauth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalAuthRepository implements IAuthRepository {
-  static const _keyEamil = 'user_email';
+  static const _keyEmail = 'user_email';
   static const _keyName = 'user_name';
   static const _keyPassword = 'user_password';
 
@@ -12,30 +12,35 @@ class LocalAuthRepository implements IAuthRepository {
 
   @override
   Future<bool> register(UserModel user) async {
-    final prefs = await SharedPreferences.getInstance();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_keyEmail, user.email);
+      await prefs.setString(_keyName, user.name);
+      await _secureStorage.write(key: _keyPassword, value: user.password);
 
-    await prefs.setString(_keyEamil, user.email);
-    await prefs.setString(_keyName, user.name);
-
-    await _secureStorage.write(key: _keyPassword, value: user.password);
-
-    return true;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
   Future<bool> login(String email, String password) async {
-    final prefs = await SharedPreferences.getInstance();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedEmail = prefs.getString(_keyEmail);
+      final savedPass = await _secureStorage.read(key: _keyPassword);
 
-    final savedEmail = prefs.getString(_keyEamil);
-    final savedPass = await _secureStorage.read(key: _keyPassword);
-
-    return email == savedEmail && password == savedPass;
+      return email == savedEmail && password == savedPass;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
   Future<UserModel?> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString(_keyEamil);
+    final email = prefs.getString(_keyEmail);
     final name = prefs.getString(_keyName);
     if (email == null) return null;
     
@@ -49,12 +54,13 @@ class LocalAuthRepository implements IAuthRepository {
   @override
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    await prefs.remove(_keyEmail);
+    await prefs.remove(_keyName);
     await _secureStorage.deleteAll();
   }
 
   @override
   Future<void> deleteAccount() async {
-    Future<void> deleteAccount() async => await logout();
+    await logout();
   }
 }

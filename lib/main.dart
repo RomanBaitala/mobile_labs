@@ -71,7 +71,7 @@ class HomeServerApp extends StatelessWidget {
   }
 
   Widget _getHome(AuthStatus status) {
-    if (status == AuthStatus.authenticated) return const DashboardScreen();
+    if (status == AuthStatus.authenticated) return const ServerListScreen();
     if (status == AuthStatus.unauthenticated) return const LoginScreen();
     
     return const Scaffold(

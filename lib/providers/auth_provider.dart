@@ -28,6 +28,15 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> register(UserModel newUser) async {
+    final success = await _repository.register(newUser);
+    if (success) {
+      await checkAuth();
+    }
+
+    return success;
+  }
+
   Future<bool> login(String email, String password) async {
     final success = await _repository.login(email, password);
     if (success) {
@@ -44,6 +53,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> deleteAccount() async {
-    logout();
+    await _repository.deleteAccount();
+    await logout();
   }
 }

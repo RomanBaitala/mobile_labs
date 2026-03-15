@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:iot_flutter_lab/domain/models/user.dart';
-import 'package:iot_flutter_lab/domain/repositories/auth_repository.dart';
 import 'package:iot_flutter_lab/domain/validators/user_validator.dart';
+import 'package:iot_flutter_lab/providers/auth_provider.dart';
 import 'package:iot_flutter_lab/widgets/auth_toggle_text.dart';
 import 'package:iot_flutter_lab/widgets/custom_input.dart';
 import 'package:iot_flutter_lab/widgets/custom_login_button.dart';
+
+import 'package:provider/provider.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -21,7 +24,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passController = TextEditingController();
   final _confirmPassController = TextEditingController();
 
-  final _authRepo = LocalAuthRepository();
 
   void _handleRegister() async {
     if (_formKey.currentState!.validate()) {
@@ -32,8 +34,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: _passController.text.trim(),
       );
 
+      final authProvider = context.read<AuthProvider>();
+
       try {
-        final success = await _authRepo.register(newUser);
+        final success = await authProvider.register(newUser);
 
         if (success && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -42,7 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               backgroundColor: Colors.greenAccent,
             ),
           );
-          Navigator.pushReplacementNamed(context, '/servers');
+          Navigator.of(context).pop();
         }
       } catch (e) {
         if (mounted) {

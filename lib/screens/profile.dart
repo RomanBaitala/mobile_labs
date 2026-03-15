@@ -70,9 +70,15 @@ class ProfileScreen extends StatelessWidget {
                   context: context,
                   builder:(context) => ConfirmationDialog(
                     title: 'Вийти з акаунту', 
-                    content: 'Ви спавді хочете вийти з акаунту?', 
+                    content: 'Ви спавді хочете вийти з акаунту?',
+                    confirmText: 'Вийти',
                     onConfirm: () async {
+                      Navigator.of(context).pop();
                       await authProvider.logout();
+
+                      if (context.mounted) {
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                      }
                     }
                   ),
                 );
@@ -92,7 +98,12 @@ class ProfileScreen extends StatelessWidget {
                     title: 'Видалити акаунт?',
                     content: 'Всі ваші дані будуть стерті назавжди.',
                     onConfirm: () async {
+                      Navigator.of(context).pop();
                       await authProvider.deleteAccount();
+
+                      if (context.mounted) {
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                      }
                     },
                   ),
                 );

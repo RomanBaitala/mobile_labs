@@ -57,7 +57,7 @@ class _ServerListScreenState extends State<ServerListScreen> {
         itemBuilder: (context, index) {
           return ServerCard(
             server: _servers[index],
-            onTap: () { /* твій снейкбар */ },
+            onTap: () {},
             onDelete: () {
               showDialog<void>(
                 context: context,
