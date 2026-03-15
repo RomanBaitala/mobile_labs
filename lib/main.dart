@@ -1,13 +1,33 @@
 import 'package:flutter/material.dart';
 
+import 'package:iot_flutter_lab/domain/repositories/auth_repository.dart';
+import 'package:iot_flutter_lab/providers/auth_provider.dart';
+
 import 'package:iot_flutter_lab/screens/dashboard.dart';
 import 'package:iot_flutter_lab/screens/login.dart';
 import 'package:iot_flutter_lab/screens/profile.dart';
 import 'package:iot_flutter_lab/screens/register.dart';
 import 'package:iot_flutter_lab/screens/server_list.dart';
 
-void main() {
-  runApp(const HomeServerApp());
+import 'package:provider/provider.dart';
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final authRepository = LocalAuthRepository();
+  final authProvider = AuthProvider(authRepository);
+
+  await authProvider.checkAuth();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: authProvider)
+      ],
+      child: const HomeServerApp()
+    )
+  );
 }
 
 class HomeServerApp extends StatelessWidget {
@@ -15,28 +35,30 @@ class HomeServerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authStatus = context.watch<AuthProvider>().status;
+
     return MaterialApp(
       
       debugShowCheckedModeBanner: false,
       title: 'Home Server Monitor',
       
       theme: ThemeData(
-      brightness: Brightness.dark,
-      primarySwatch: Colors.green,
-      scaffoldBackgroundColor: const Color(0xFF121212),
-      
-      cardTheme: const CardThemeData(
-        color: Color(0xFF1E1E1E),
-        elevation: 2,
-        margin: EdgeInsets.all(8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
+        brightness: Brightness.dark,
+        primarySwatch: Colors.green,
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        
+        cardTheme: const CardThemeData(
+          color: Color(0xFF1E1E1E),
+          elevation: 2,
+          margin: EdgeInsets.all(8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+          ),
         ),
+    
+        useMaterial3: true,
       ),
-  
-  useMaterial3: true,
-),
-      initialRoute: '/login',
+      home: _getHome(authStatus),
 
       routes: {
         '/login': (context) => const LoginScreen(),
@@ -45,6 +67,15 @@ class HomeServerApp extends StatelessWidget {
         '/profile': (context) => const ProfileScreen(),
         '/servers': (context) => const ServerListScreen(),
       },
+    );
+  }
+
+  Widget _getHome(AuthStatus status) {
+    if (status == AuthStatus.authenticated) return const DashboardScreen();
+    if (status == AuthStatus.unauthenticated) return const LoginScreen();
+    
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 }
