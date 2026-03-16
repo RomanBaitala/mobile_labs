@@ -12,4 +12,13 @@ class ServerModel {
     required this.ipAddress,
     required this.status,
   });
+
+  ServerModel copyWith({ServerStatus? status}) {
+    return ServerModel(
+      id: id,
+      name: name,
+      ipAddress: ipAddress,
+      status: status ?? this.status,
+    );
+  }
 }
