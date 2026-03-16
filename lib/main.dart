@@ -63,7 +63,7 @@ class HomeServerApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
-        '/home': (context) => const DashboardScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/servers': (context) => const ServerListScreen(),
       },

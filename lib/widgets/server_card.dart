@@ -29,6 +29,7 @@ class ServerCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 4,
       child: ListTile(
+        onTap: onTap,
         leading: Icon(Icons.dns, color: statusColor, size: 40),
         title: Text(
           server.name, 

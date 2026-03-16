@@ -77,7 +77,9 @@ class ProfileScreen extends StatelessWidget {
                       await authProvider.logout();
 
                       if (context.mounted) {
-                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.of(context).popUntil(
+                          (route) => route.isFirst
+                        );
                       }
                     }
                   ),
@@ -102,7 +104,9 @@ class ProfileScreen extends StatelessWidget {
                       await authProvider.deleteAccount();
 
                       if (context.mounted) {
-                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.of(context).popUntil(
+                          (route) => route.isFirst
+                          );
                       }
                     },
                   ),

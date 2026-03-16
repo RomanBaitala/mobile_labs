@@ -57,7 +57,13 @@ class _ServerListScreenState extends State<ServerListScreen> {
         itemBuilder: (context, index) {
           return ServerCard(
             server: _servers[index],
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/dashboard',
+                arguments: _servers[index],
+              );
+            },
             onDelete: () {
               showDialog<void>(
                 context: context,
