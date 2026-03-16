@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/repositories/auth_repository.dart';
+import 'package:iot_flutter_lab/providers/auth_provider.dart';
 import 'package:iot_flutter_lab/widgets/auth_toggle_text.dart';
 import 'package:iot_flutter_lab/widgets/custom_input.dart';
 import 'package:iot_flutter_lab/widgets/custom_login_button.dart';
+import 'package:provider/provider.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -16,25 +17,35 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   
-  final _authRepo = LocalAuthRepository();
+  bool _isLoading = false;
 
   Future<void> _handleLogin() async {
     final String email = _emailController.text.trim();
     final String password = _passController.text.trim();
 
-    final success = await _authRepo.login(email, password);
+    setState(() {
+      _isLoading = true;
+    });
+
+    final authProvider = context.read<AuthProvider>();
+    final success = await authProvider.login(email, password);
 
     if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+    });
 
-    if (success) {
-      Navigator.pushReplacementNamed(context, '/servers');
-    } else {
+    if (!success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Помилка: Невірний email або пароль!'),
           backgroundColor: Colors.redAccent,
         ),
       );
+    }
+
+    if (success && mounted){
+      Navigator.of(context).pop();
     }
   }
 
@@ -48,7 +59,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: _isLoading ? 
+        const Center(child: CircularProgressIndicator()) 
+        : Padding(
         padding: const EdgeInsets.all(24),
         child: SingleChildScrollView(
           child: Column(

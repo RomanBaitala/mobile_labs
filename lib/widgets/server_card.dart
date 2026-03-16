@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/models/server.dart';
+import 'package:iot_flutter_lab/domain/models/server.dart';
 
 class ServerCard extends StatelessWidget {
   final ServerModel server;
@@ -29,6 +29,7 @@ class ServerCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 4,
       child: ListTile(
+        onTap: onTap,
         leading: Icon(Icons.dns, color: statusColor, size: 40),
         title: Text(
           server.name, 

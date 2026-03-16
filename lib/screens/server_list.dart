@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/models/server.dart';
+
+import 'package:iot_flutter_lab/domain/models/server.dart';
+import 'package:iot_flutter_lab/providers/sensor_provider.dart';
 import 'package:iot_flutter_lab/widgets/add_server_dialog.dart';
 import 'package:iot_flutter_lab/widgets/confirmation_dialog.dart';
 import 'package:iot_flutter_lab/widgets/server_card.dart';
+
+import 'package:provider/provider.dart';
 
 class ServerListScreen extends StatefulWidget {
   const ServerListScreen({super.key});
@@ -15,26 +19,16 @@ class _ServerListScreenState extends State<ServerListScreen> {
   final List<ServerModel> _servers = [
     ServerModel(
       id: '1', 
-      name: 'Main Web Server', 
+      name: 'Temp Sensor', 
       ipAddress: '192.168.1.10', 
       status: ServerStatus.connected
-    ),
-    ServerModel(
-      id: '2', 
-      name: 'Database Node', 
-      ipAddress: '192.168.1.11', 
-      status: ServerStatus.connectionLost
-    ),
-    ServerModel(
-      id: '3', 
-      name: 'Backup Storage', 
-      ipAddress: '10.0.0.5', 
-      status: ServerStatus.disconnected
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final sensorProvider = context.watch<SensorProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Servers'),
@@ -55,9 +49,19 @@ class _ServerListScreenState extends State<ServerListScreen> {
         padding: const EdgeInsets.all(16),
         itemCount: _servers.length,
         itemBuilder: (context, index) {
+          final server = _servers[index];
+          final bool isCurrentServer = index == 0;
           return ServerCard(
-            server: _servers[index],
-            onTap: () { /* твій снейкбар */ },
+            server: isCurrentServer 
+              ? server.copyWith(status: _mapMqttStatus(sensorProvider))
+              : server,
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/dashboard',
+                arguments: _servers[index],
+              );
+            },
             onDelete: () {
               showDialog<void>(
                 context: context,
@@ -92,5 +96,11 @@ class _ServerListScreenState extends State<ServerListScreen> {
         child: const Icon(Icons.add, color: Colors.black),
       ),
     );
+  }
+
+  ServerStatus _mapMqttStatus(SensorProvider provider) {
+    if (!provider.isOnline) return ServerStatus.connectionLost;
+    if (provider.isMqttConnected) return ServerStatus.connected;
+    return ServerStatus.disconnected;
   }
 }
