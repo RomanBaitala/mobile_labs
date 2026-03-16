@@ -13,7 +13,7 @@ class MqttService {
   MqttService(String server, String clientId)
     : client = MqttServerClient(server, clientId);
 
-  Future<void> connect() async {
+  Future<void> connect(String topic) async {
     client.port = 1883;
     client.logging(on: false);
     client.keepAlivePeriod = 20;
@@ -35,23 +35,21 @@ class MqttService {
       client.disconnect();
     }
 
-    if (client.connectionStatus!.state != MqttConnectionState.connected) {
-      _logger.i('MQTT connected');
-    } else {
-      _logger.e('MQTT connection failed');
-      client.disconnect();
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+      _logger.i('Connected');
+      
+      subscribe(topic);
+
+      client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
+        final recMessage = messages[0].payload as MqttPublishMessage;
+        final payload = MqttPublishPayload.bytesToStringAsString(
+          recMessage.payload.message
+        );
+        _logger.d('Received: $payload from ${messages[0].topic}');
+        _tempController.add(payload);
+      });
+      
     }
-
-    client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> messages ) {
-      final recivedMessage = messages[0].payload as MqttPublishMessage;
-
-      final payload = MqttPublishPayload.bytesToStringAsString(
-        recivedMessage.payload.message
-      );
-
-      _tempController.add(payload);
-
-    });
   }
 
   void subscribe(String topic) {
@@ -70,5 +68,10 @@ class MqttService {
 
   void onDisconnected() {
     _logger.w('Disconnected');
+  }
+
+  void dispose() {
+    _tempController.close();
+    client.disconnect();
   }
 }

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:iot_flutter_lab/domain/repositories/auth_repository.dart';
 import 'package:iot_flutter_lab/providers/auth_provider.dart';
+import 'package:iot_flutter_lab/providers/sensor_provider.dart';
 
 import 'package:iot_flutter_lab/screens/dashboard.dart';
 import 'package:iot_flutter_lab/screens/login.dart';
 import 'package:iot_flutter_lab/screens/profile.dart';
 import 'package:iot_flutter_lab/screens/register.dart';
 import 'package:iot_flutter_lab/screens/server_list.dart';
+import 'package:iot_flutter_lab/services/connectivity_service.dart';
+import 'package:iot_flutter_lab/services/mqtt_service.dart';
 
 import 'package:provider/provider.dart';
 
@@ -18,12 +21,21 @@ void main() async {
   final authRepository = LocalAuthRepository();
   final authProvider = AuthProvider(authRepository);
 
+  final mqttService = MqttService('test.mosquitto.org',
+   'flutter_client_${DateTime.now().millisecondsSinceEpoch}');
+  final connectivityService = ConnectivityService();
+ 
+
   await authProvider.checkAuth();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: authProvider)
+        ChangeNotifierProvider.value(value: authProvider),
+
+        ChangeNotifierProvider(
+          create: (_) => SensorProvider(mqttService, connectivityService),
+        ),
       ],
       child: const HomeServerApp()
     )

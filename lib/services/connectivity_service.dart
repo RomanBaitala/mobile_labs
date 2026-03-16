@@ -1,32 +1,26 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class ConnectivityService {
   final _controller = StreamController<bool>.broadcast();
   Stream<bool> get connectivityStream => _controller.stream;
 
   ConnectivityService() {
-    Connectivity().onConnectivityChanged.listen(
-      (List<ConnectivityResult> results) async {
-        final hasInterface = 
-          results.isNotEmpty && results.first != ConnectivityResult.none;
-        
-        if (hasInterface) {
-          final hasInternet = 
-            await InternetConnectionChecker.instance.hasConnection;
-          _controller.add(hasInternet);
-        } else {
-          _controller.add(false);
-        }
-    });
+    Connectivity().onConnectivityChanged.listen(_updateStatus);
+    
+    _initInitialStatus();
   }
 
-  Future<bool> checkConnection() async {
-    return await InternetConnectionChecker.instance.hasConnection;
+  void _initInitialStatus() async {
+    final results = await Connectivity().checkConnectivity();
+    _updateStatus(results);
   }
 
-  void dispose() {
-    _controller.close();
+  void _updateStatus(List<ConnectivityResult> results) {
+    final bool online = results.isNotEmpty 
+      && !results.contains(ConnectivityResult.none);
+    _controller.add(online);
   }
+
+  void dispose() => _controller.close();
 }
