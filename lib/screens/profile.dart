@@ -9,7 +9,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepo = LocalAuthRepository();
+    final authRepo = RemoteAuthRepository();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Профіль')),

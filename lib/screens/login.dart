@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   
-  final _authRepo = LocalAuthRepository();
+  final _authRepo = RemoteAuthRepository();
 
   Future<void> _handleLogin() async {
     final String email = _emailController.text.trim();
