@@ -7,20 +7,23 @@ class ServerCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const ServerCard({
-    required this.server, 
+    required this.server,
     required this.onTap,
-    required this.onDelete, 
-    super.key
+    required this.onDelete,
+    super.key,
   });
 
   Color _getStatusColor() {
     switch (server.status) {
-      case ServerStatus.connected: return Colors.green;
-      case ServerStatus.disconnected: return Colors.grey;
-      case ServerStatus.connectionLost: return Colors.red;
+      case ServerStatus.connected:
+        return Colors.green;
+      case ServerStatus.disconnected:
+        return Colors.grey;
+      case ServerStatus.connectionLost:
+        return Colors.red;
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final Color statusColor = _getStatusColor();
@@ -29,12 +32,13 @@ class ServerCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 4,
       child: ListTile(
+        onTap: onTap, 
         leading: Icon(Icons.dns, color: statusColor, size: 40),
         title: Text(
-          server.name, 
-          style: const TextStyle(fontWeight: FontWeight.bold)
+          server.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(server.ipAddress),
+        subtitle: Text('ID: ${server.id} | ${server.ipAddress}'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -57,7 +61,7 @@ class ServerCard extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: statusColor.withValues(alpha: 0.5),
+                          color: statusColor,
                           blurRadius: 5,
                           spreadRadius: 2,
                         )
@@ -68,9 +72,9 @@ class ServerCard extends StatelessWidget {
                   Text(
                     server.status.name.toUpperCase(),
                     style: TextStyle(
-                      fontSize: 10, 
-                      color: statusColor, 
-                      fontWeight: FontWeight.bold
+                      fontSize: 10,
+                      color: statusColor,
+                      fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.end,
                   ),

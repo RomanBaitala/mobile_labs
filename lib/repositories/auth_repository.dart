@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:iot_flutter_lab/models/user.dart';
 import 'package:iot_flutter_lab/repositories/iauth_repository.dart';
@@ -25,6 +26,7 @@ class RemoteAuthRepository implements IAuthRepository {
   @override
   Future<bool> login(String email, String password) async {
     try {
+       
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: {'Content-Type': 'application/json'},
@@ -36,7 +38,9 @@ class RemoteAuthRepository implements IAuthRepository {
         final prefs = await SharedPreferences.getInstance();
         
         await prefs.setString('token', data['token'] as String);
-        
+
+      
+        debugPrint('JWT Token: ${data['token']}');
         final userData = data['user'];
         
         await prefs.setInt('user_id', userData['id'] as int);
