@@ -21,6 +21,8 @@ class ServerCard extends StatelessWidget {
         return Colors.grey;
       case ServerStatus.connectionLost:
         return Colors.red;
+      case ServerStatus.unknown:
+        return Colors.red;
     }
   }
 

@@ -1,4 +1,4 @@
-enum ServerStatus { connected, disconnected, connectionLost }
+enum ServerStatus { connected, disconnected, connectionLost, unknown }
 
 class ServerModel {
   final int id;
@@ -13,11 +13,26 @@ class ServerModel {
     required this.status,
   });
 
+  ServerModel copyWith({
+    int? id,
+    String? name,
+    String? ipAddress,
+    ServerStatus? status,
+  }) {
+    return ServerModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      ipAddress: ipAddress ?? this.ipAddress,
+      status: status ?? this.status,
+    );
+  }
+
   factory ServerModel.fromJson(Map<String, dynamic> json) {
     ServerStatus status;
     switch (json['status']) {
       case 'connected': status = ServerStatus.connected; break;
       case 'connectionLost': status = ServerStatus.connectionLost; break;
+      case 'unknown': status = ServerStatus.unknown; break;
       default: status = ServerStatus.disconnected;
     }
 

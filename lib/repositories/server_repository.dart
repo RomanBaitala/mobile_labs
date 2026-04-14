@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:iot_flutter_lab/models/metric.dart';
@@ -58,7 +59,9 @@ class RemoteServerRepository implements IServerRepository {
         ).toList();
       }
       return [];
-    } catch (e) {
+    } on TimeoutException catch (_) {
+    throw 'Сервер занадто довго не відповідає';} 
+    catch (e) {
       return [];
     }
   }
