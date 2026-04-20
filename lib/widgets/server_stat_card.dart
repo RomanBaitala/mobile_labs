@@ -31,11 +31,13 @@ class ServerStatCard extends StatelessWidget {
             const SizedBox(height: 12),
             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            Text(value, style: const TextStyle(
-                fontSize: 20, 
-                color: Colors.green, 
-                fontWeight: FontWeight.bold
-              )
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 20,
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
