@@ -19,10 +19,7 @@ class AuthToggle extends StatelessWidget {
       children: [
         Text(
           question,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 16
-            ),
+          style: const TextStyle(color: Colors.white70, fontSize: 16),
         ),
         TextButton(
           onPressed: onTap,
@@ -31,7 +28,7 @@ class AuthToggle extends StatelessWidget {
             style: const TextStyle(
               color: Colors.green,
               fontWeight: FontWeight.bold,
-              fontSize: 16
+              fontSize: 16,
             ),
           ),
         ),

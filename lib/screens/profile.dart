@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:iot_flutter_lab/models/user.dart';
-import 'package:iot_flutter_lab/repositories/auth_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iot_flutter_lab/logic/auth/auth_cubit.dart';
+import 'package:iot_flutter_lab/logic/auth/auth_state.dart';
 import 'package:iot_flutter_lab/widgets/confirmation_dialog.dart';
 import 'package:iot_flutter_lab/widgets/profile_title.dart';
 
@@ -9,105 +10,111 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepo = RemoteAuthRepository();
-
     return Scaffold(
       appBar: AppBar(title: const Text('Профіль')),
-      body: FutureBuilder<UserModel?>(
-        future: authRepo.getCurrentUser(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.green)
-            );
+      body: BlocListener<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is Unauthenticated) {
+            Navigator.pushNamedAndRemoveUntil(context, '/login', (r) => false);
           }
-
-          final user = snapshot.data;
-
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.green,
-                  child: Icon(Icons.person, size: 50, color: Colors.black),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  user?.name ?? 'Без імені', 
-                  style: const TextStyle(
-                    fontSize: 22, fontWeight: FontWeight.bold
-                  )
-                ),
-                Text(
-                  user?.email ?? 'no-email@system.com', 
-                  style: const TextStyle(color: Colors.green)
-                ),
-                
-                const SizedBox(height: 30),
-                const Divider(color: Colors.grey),
-
-                ProfileTile(
-                  icon: Icons.settings_remote,
-                  title: 'Server Connections',
-                  subtitle: 'Manage SSH keys and IP addresses',
-                  onTap: () {},
-                ),
-                ProfileTile(
-                  icon: Icons.notifications_active,
-                  title: 'Alerts',
-                  subtitle: 'CPU & RAM threshold notifications',
-                  onTap: () {},
-                ),
-                ProfileTile(
-                  icon: Icons.security,
-                  title: 'Security',
-                  subtitle: '2FA and Access Logs',
-                  onTap: () {},
-                ),
-                
-                const Divider(color: Colors.grey),
-                
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.redAccent),
-                  title: const Text(
-                    'Logout', 
-                    style: TextStyle(color: Colors.redAccent)
-                  ),
-                  onTap: () async {
-                    await authRepo.logout();
-                    if (context.mounted) {
-                      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.delete, color: Colors.red),
-                  title: const Text(
-                    'Видалити акаунт',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  onTap: () {
-                    showDialog<void>(
-                      context: context,
-                      builder: (context) => ConfirmationDialog(
-                        title: 'Видалити акаунт?',
-                        content: 'Всі ваші дані будуть стерті назавжди.',
-                        onConfirm: () async {
-                          await authRepo.deleteAccount();
-                          if (context.mounted) {
-                            Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-                          }
-                        },
-                      ),
-                    );
-                  }
-                )
-              ],
-            ),
-          );
         },
+        child: BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            final String name = (state is Authenticated)
+                ? 'User ${state.userId}'
+                : 'Гість';
+            final String email =
+                'user_${state is Authenticated ? state.userId : 
+                '0'}@system.com';
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  const CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.green,
+                    child: Icon(Icons.person, size: 50, color: Colors.black),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(email, style: const TextStyle(color: Colors.green)),
+                  const SizedBox(height: 30),
+                  const Divider(color: Colors.grey),
+                  _buildMenuTiles(context),
+                  const Divider(color: Colors.grey),
+                  _buildActionTiles(context),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuTiles(BuildContext context) {
+    return Column(
+      children: [
+        ProfileTile(
+          icon: Icons.settings_remote,
+          title: 'Server Connections',
+          subtitle: 'Manage SSH keys',
+          onTap: () {},
+        ),
+        ProfileTile(
+          icon: Icons.notifications_active,
+          title: 'Alerts',
+          subtitle: 'CPU & RAM threshold',
+          onTap: () {},
+        ),
+        ProfileTile(
+          icon: Icons.security,
+          title: 'Security',
+          subtitle: '2FA and Access Logs',
+          onTap: () {},
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionTiles(BuildContext context) {
+    final cubit = context.read<AuthCubit>();
+    return Column(
+      children: [
+        ListTile(
+          leading: const Icon(Icons.logout, color: Colors.redAccent),
+          title: const Text(
+            'Logout',
+            style: TextStyle(color: Colors.redAccent),
+          ),
+          onTap: cubit.logout,
+        ),
+        ListTile(
+          leading: const Icon(Icons.delete, color: Colors.red),
+          title: const Text(
+            'Видалити акаунт',
+            style: TextStyle(color: Colors.red),
+          ),
+          onTap: () => _confirmDeletion(context, cubit),
+        ),
+      ],
+    );
+  }
+
+  void _confirmDeletion(BuildContext context, AuthCubit cubit) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => ConfirmationDialog(
+        title: 'Видалити акаунт?',
+        content: 'Всі ваші дані будуть стерті назавжди.',
+        onConfirm: () => cubit.logout(),
       ),
     );
   }

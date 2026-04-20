@@ -5,10 +5,10 @@ class CustomLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? color;
   const CustomLoginButton({
-    required this.buttonText, 
+    required this.buttonText,
     required this.onPressed,
-    this.color,  
-    super.key
+    this.color,
+    super.key,
   });
 
   @override
@@ -20,9 +20,7 @@ class CustomLoginButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: color ?? Colors.green,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4)
-          )
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         ),
         child: Text(
           buttonText.toUpperCase(),
@@ -30,10 +28,10 @@ class CustomLoginButton extends StatelessWidget {
             fontWeight: FontWeight.bold,
             fontSize: 16,
             letterSpacing: 1.2,
-            color: Colors.white
+            color: Colors.white,
           ),
         ),
-      )
+      ),
     );
   }
 }

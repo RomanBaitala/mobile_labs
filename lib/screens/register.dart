@@ -1,66 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_flutter_lab/domain/validators/user_validator.dart';
-import 'package:iot_flutter_lab/repositories/auth_repository.dart';
+import 'package:iot_flutter_lab/logic/auth/auth_cubit.dart';
+import 'package:iot_flutter_lab/logic/auth/auth_state.dart';
 import 'package:iot_flutter_lab/widgets/auth_toggle_text.dart';
 import 'package:iot_flutter_lab/widgets/custom_input.dart';
 import 'package:iot_flutter_lab/widgets/custom_login_button.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BlocListener<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.redAccent,
+              ),
+            );
+          }
+        },
+        child: const SingleChildScrollView(
+          child: Padding(padding: EdgeInsets.all(24), child: _RegisterForm()),
+        ),
+      ),
+    );
+  }
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+class _RegisterForm extends StatefulWidget {
+  const _RegisterForm();
 
+  @override
+  State<_RegisterForm> createState() => _RegisterFormState();
+}
+
+class _RegisterFormState extends State<_RegisterForm> {
+  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _confirmPassController = TextEditingController();
-
-  final _authRepo = RemoteAuthRepository();
-
-  void _handleRegister() async {
-    if (_isLoading) return;
-
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-
-      try {
-        final success = await _authRepo.register(
-          _nameController.text.trim(),
-          _emailController.text.trim(),
-          _passController.text.trim(),
-        );
-
-        if (success && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Реєстрація успішна! Тепер увійдіть.'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          Navigator.pushReplacementNamed(context, '/login');
-        } else if (mounted) {
-          throw Exception('Такий користувач вже існує або сервер недоступний');
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Помилка: ${e.toString()}'),
-              backgroundColor: Colors.redAccent,
-            ),
-          );
-        }
-      } finally {
-        if (mounted) setState(() => _isLoading = false);
-      }
-    }
-  }
 
   @override
   void dispose() {
@@ -71,75 +55,92 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  void _onRegisterPressed() {
+    if (_formKey.currentState!.validate()) {
+      final authCubit = context.read<AuthCubit>();
+      final navigator = Navigator.of(context);
+      final messenger = ScaffoldMessenger.of(context);
+
+      authCubit
+          .register(
+            _nameController.text.trim(),
+            _emailController.text.trim(),
+            _passController.text.trim(),
+          )
+          .then((_) {
+            if (!mounted) return;
+
+            if (authCubit.state is! AuthError) {
+              messenger.showSnackBar(
+                const SnackBar(
+                  content: Text('Реєстрація успішна! Увійдіть.'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              navigator.pushReplacementNamed('/login');
+            }
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 60),
-                const Icon(Icons.dns, size: 80, color: Colors.green),
-                const SizedBox(height: 32),
-                CustomInput(
-                  label: 'Name',
-                  icon: Icons.person,
-                  controller: _nameController,
-                  validation: (value) => value == null || value.isEmpty
-                      ? 'Введіть ім\'я'
-                      : null,
-                ),
-                const SizedBox(height: 16),
-                CustomInput(
-                  label: 'Email',
-                  icon: Icons.email,
-                  controller: _emailController,
-                  validation: UserValidator.validateEmail,
-                ),
-                const SizedBox(height: 16),
-                CustomInput(
-                  label: 'Password',
-                  icon: Icons.password,
-                  isPassword: true,
-                  controller: _passController,
-                  validation: UserValidator.validatePassword,
-                ),
-                const SizedBox(height: 16),
-                CustomInput(
-                  label: 'Confirm Password',
-                  icon: Icons.lock_reset,
-                  isPassword: true,
-                  controller: _confirmPassController,
-                  validation: (value) => UserValidator.validateCompPassword(
-                    _passController.text,
-                    value,
-                  ),
-                ),
-                const SizedBox(height: 32),
-
-                if (_isLoading)
-                  const CircularProgressIndicator(color: Colors.green)
-                else
-                  CustomLoginButton(
-                    buttonText: 'Register',
-                    onPressed: _handleRegister,
-                  ),
-
-                const SizedBox(height: 16),
-                AuthToggle(
-                  question: 'Вже маєте акаунт?',
-                  actionText: 'Увійти',
-                  onTap: () =>
-                      Navigator.pushReplacementNamed(context, '/login'),
-                )
-              ],
-            ),
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          const SizedBox(height: 60),
+          const Icon(Icons.dns, size: 80, color: Colors.green),
+          const SizedBox(height: 32),
+          CustomInput(
+            label: 'Name',
+            icon: Icons.person,
+            controller: _nameController,
+            validation: (v) => v == null || v.isEmpty ? 'Введіть ім\'я' : null,
           ),
-        ),
+          const SizedBox(height: 16),
+          CustomInput(
+            label: 'Email',
+            icon: Icons.email,
+            controller: _emailController,
+            validation: UserValidator.validateEmail,
+          ),
+          const SizedBox(height: 16),
+          CustomInput(
+            label: 'Password',
+            icon: Icons.password,
+            isPassword: true,
+            controller: _passController,
+            validation: UserValidator.validatePassword,
+          ),
+          const SizedBox(height: 16),
+          CustomInput(
+            label: 'Confirm Password',
+            icon: Icons.lock_reset,
+            isPassword: true,
+            controller: _confirmPassController,
+            validation: (v) =>
+                UserValidator.validateCompPassword(_passController.text, v),
+          ),
+          const SizedBox(height: 32),
+          BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              if (state is AuthLoading) {
+                return const CircularProgressIndicator(color: Colors.green);
+              }
+              return CustomLoginButton(
+                buttonText: 'Register',
+                onPressed: _onRegisterPressed,
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          AuthToggle(
+            question: 'Вже маєте акаунт?',
+            actionText: 'Увійти',
+            onTap: () => Navigator.pushReplacementNamed(context, '/login'),
+          ),
+        ],
       ),
     );
   }
