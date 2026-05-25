@@ -8,11 +8,13 @@ import 'package:iot_flutter_lab/logic/servers/server_cubit.dart';
 import 'package:iot_flutter_lab/repositories/auth_repository.dart';
 import 'package:iot_flutter_lab/repositories/server_repository.dart';
 // Screens
+import 'package:iot_flutter_lab/screens/charge.dart';
 import 'package:iot_flutter_lab/screens/dashboard.dart';
 import 'package:iot_flutter_lab/screens/login.dart';
 import 'package:iot_flutter_lab/screens/profile.dart';
 import 'package:iot_flutter_lab/screens/register.dart';
 import 'package:iot_flutter_lab/screens/server_list.dart';
+
 
 void main() {
   final serverRepository = RemoteServerRepository();
@@ -58,6 +60,7 @@ class HomeServerApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/servers': (context) => const ServerListScreen(),
+        '/battery': (context) => const ChargingPage(),
       },
       onGenerateRoute: _onGenerateRoute,
     );

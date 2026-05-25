@@ -99,6 +99,14 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildMenuTiles(BuildContext context) {
     return Column(
       children: [
+        ProfileTile(
+          icon: Icons.battery_charging_full,
+          title: 'Battery Monitor',
+          subtitle: 'Flashlight automation & logs',
+          onTap: () {
+            Navigator.pushNamed(context, '/battery');
+          },
+        ),
         ProfileTile(icon: Icons.settings_remote, 
           title: 'Server Connections', 
           subtitle: 'Manage SSH keys', onTap: () {}
