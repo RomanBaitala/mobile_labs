@@ -30,10 +30,17 @@ class ServerModel {
   factory ServerModel.fromJson(Map<String, dynamic> json) {
     ServerStatus status;
     switch (json['status']) {
-      case 'connected': status = ServerStatus.connected; break;
-      case 'connectionLost': status = ServerStatus.connectionLost; break;
-      case 'unknown': status = ServerStatus.unknown; break;
-      default: status = ServerStatus.disconnected;
+      case 'connected':
+        status = ServerStatus.connected;
+        break;
+      case 'connectionLost':
+        status = ServerStatus.connectionLost;
+        break;
+      case 'unknown':
+        status = ServerStatus.unknown;
+        break;
+      default:
+        status = ServerStatus.disconnected;
     }
 
     return ServerModel(

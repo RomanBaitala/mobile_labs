@@ -16,8 +16,8 @@ class ServerChartCard extends StatelessWidget {
     final sortedMetrics = List<MetricModel>.from(metrics);
     sortedMetrics.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-    final displayMetrics = sortedMetrics.length > 20 
-        ? sortedMetrics.sublist(sortedMetrics.length - 20) 
+    final displayMetrics = sortedMetrics.length > 20
+        ? sortedMetrics.sublist(sortedMetrics.length - 20)
         : sortedMetrics;
 
     final reversedMetrics = displayMetrics.toList();
@@ -31,8 +31,8 @@ class ServerChartCard extends StatelessWidget {
         child: Column(
           children: [
             const Text(
-              'Performance History', 
-              style: TextStyle(fontWeight: FontWeight.bold)
+              'Performance History',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -42,7 +42,10 @@ class ServerChartCard extends StatelessWidget {
                   gridData: const FlGridData(show: false),
                   titlesData: const FlTitlesData(
                     leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: true, reservedSize: 30)
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 30,
+                      ),
                     ),
                   ),
                   borderData: FlBorderData(show: false),
@@ -77,7 +80,7 @@ class ServerChartCard extends StatelessWidget {
                 const SizedBox(width: 20),
                 _legendItem('Temperature', Colors.red),
               ],
-            )
+            ),
           ],
         ),
       ),

@@ -27,8 +27,8 @@ class CustomInput extends StatelessWidget {
         labelText: label,
         border: const OutlineInputBorder(),
         focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.green, width: 2)
-        )
+          borderSide: BorderSide(color: Colors.green, width: 2),
+        ),
       ),
     );
   }
